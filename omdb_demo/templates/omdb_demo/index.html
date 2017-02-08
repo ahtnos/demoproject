@@ -1,11 +1,17 @@
+{% load static %}
 <html>
 <head>
 <title>OMDB API demo app</title>
+<link rel="stylesheet" type="text/css" href="{% static "omdb_demo/index.css" %}" />
+</head>
+
 <body>
+<div class='title'>
 {% if series %}
     <p> {{ series.Title }} </p>
 {% else %}
     <p>Could not find a matching series.</p>
 {% endif %}
+</div>
 </body>
 </html>
