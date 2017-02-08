@@ -1,0 +1,11 @@
+<html>
+<head>
+<title>OMDB API demo app</title>
+<body>
+{% if series %}
+    <p> {{ series.Title }} </p>
+{% else %}
+    <p>Could not find a matching series.</p>
+{% endif %}
+</body>
+</html>
