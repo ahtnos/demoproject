@@ -2,25 +2,69 @@
 <html>
 <head>
 <title>OMDB API demo app</title>
+<script src="{% static "omdb_demo/jquery-3.1.1.min.js" %}"></script>
 <link rel="stylesheet" type="text/css" href="{% static "omdb_demo/index.css" %}" />
 </head>
 
 <body>
 
-<!-- TODO: search form -->
+<form>
+<label for="title">Series title</label>
+<input type="text" name="title" />
+<input type="submit" value="Search" />
+</form>
 
 
 {% if series %}
 <div class="section">
 	<h2 class="series_title"> {{series.Title}} </h2>
-	<img class="series_image" src="{{series.Poster}}" />
 	<div class="series_plot"> {{series.Plot}} </div>
+	<img class="series_image" src="{{series.Poster}}" />
 	<ul class="series_details">
 	{% for detail_item in series.detail_items %}
 		<li><div class="series_details_header">{{detail_item.header}}</div>{{detail_item.value}}</li>
 	{% endfor %}
 	</ul>
 </div>
+<div class="section" id="season_div">
+	<div>Season</div>
+	<ul class="season_selector">
+	{% for season_number in series.season_range %}
+		<li onclick="load_season({{season_number}})" class="season_button">{{season_number}}</li>
+	{% endfor %}
+	</ul>
+
+	<div id="episode_list_holder" />
+		<img id="episode_loader" src="{% static "omdb_demo/loader.gif" %}" />
+		<table id="episode_table" style="display: none;">
+		<thead><tr>
+			<th></th><th>Title</th><th>IMDb Rating</th><th>Release date</th>
+		</tr></thead>
+		<tbody />
+		</table>
+	</div>
+	<script>
+	$( document ).ready(function() {
+		load_season(1);
+	})
+
+	function load_season(seasonNumber) {
+		$("#episode_loader").show();
+		$(".season_button").removeClass("season_button_active");
+		$(".season_button:nth-child(" + seasonNumber + ")").addClass("season_button_active");
+		$.getJSON("get_season?series_imdb_id={{series.imdbID}}&number=" + seasonNumber, function(season) {
+			$("#episode_table tbody").empty();
+			$.each(season.Episodes, function(index, episode) {				
+				$("#episode_table tbody").append("<tr><td>" + episode.Episode + "</td><td>" + episode.Title + "</td><td>" + episode.imdbRating + "</td><td>" + episode.Released + "</td></tr>");
+			});
+			$("#episode_loader").hide();
+			$("#episode_table").show();
+		});
+	}
+	</script>
+</div>
+{% else %}
+<div class="section">No results found!</div>
 {% endif %}
 
 </body>
