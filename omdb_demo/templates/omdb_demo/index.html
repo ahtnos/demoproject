@@ -6,12 +6,22 @@
 </head>
 
 <body>
-<div class='title'>
+
+<!-- TODO: search form -->
+
+
 {% if series %}
-    <p> {{ series.Title }} </p>
-{% else %}
-    <p>Could not find a matching series.</p>
-{% endif %}
+<div class="section">
+	<h2 class="series_title"> {{series.Title}} </h2>
+	<img class="series_image" src="{{series.Poster}}" />
+	<div class="series_plot"> {{series.Plot}} </div>
+	<ul class="series_details">
+	{% for detail_item in series.detail_items %}
+		<li><div class="series_details_header">{{detail_item.header}}</div>{{detail_item.value}}</li>
+	{% endfor %}
+	</ul>
 </div>
+{% endif %}
+
 </body>
 </html>
